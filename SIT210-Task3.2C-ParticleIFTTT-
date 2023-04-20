@@ -1,0 +1,36 @@
+
+int luminance;
+int photosensor = A4;
+int lightLevel = 0;
+bool sunExposure;
+bool exposureTime;
+int count;
+
+void setup() {
+    Particle.variable("sunlight", luminance);
+    Particle.variable("sunlight", photosensor);
+    
+    pinMode(photosensor, INPUT);
+}
+
+bool alreadyPublished = false;
+
+void loop() {
+    
+    luminance = analogRead(photosensor);
+    
+    if (luminance > 1 && alreadyPublished == false)
+    {
+        alreadyPublished = true;
+        Particle.publish("sunlight", "Terrarium in shade", PRIVATE);
+        // sunExposure = false;
+    }
+    
+    if (luminance < 1 && alreadyPublished == true) 
+    {
+        Particle.publish("sunlight", "Terrarium exposed to sunlight", PRIVATE);
+        alreadyPublished = false;
+    }
+    delay(2000);
+}
+        
